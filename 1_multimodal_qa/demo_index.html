@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>示波器智能交互系统 - 高校实验场景</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .iphone-frame {
+            position: relative;
+            margin: 40px auto;
+            width: 375px;
+            height: 812px;
+            background-color: #000;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 0 0 2px #222, 0 0 0 7px #111, 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 20px;
+            height: 44px;
+            background-color: #000;
+            color: white;
+            font-size: 12px;
+            position: relative;
+            z-index: 20;
+        }
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 30px;
+            background-color: #000;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            z-index: 10;
+        }
+        .app-header {
+            background-color: #1c1c1e;
+            border-bottom: 1px solid #333;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 17px;
+        }
+        .message-bubble {
+            max-width: 70%;
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+        .user-message {
+            background-color: #0b84ff;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        .ai-message {
+            background-color: #2c2c2e;
+            color: white;
+            border-bottom-left-radius: 5px;
+        }
+        .message-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+        .message-audio {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 12px;
+        }
+        .message-video {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+            background-color: #000;
+        }
+        .input-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #1c1c1e;
+            padding: 12px;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+        }
+        .input-field {
+            flex: 1;
+            background-color: #2c2c2e;
+            border-radius: 20px;
+            border: none;
+            padding: 10px 15px;
+            color: white;
+            margin-right: 10px;
+        }
+        .input-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0b84ff;
+            color: white;
+            margin-left: 5px;
+        }
+        .experiment-selector {
+            background-color: #2c2c2e;
+            padding: 10px;
+            border-radius: 12px;
+            margin: 10px;
+        }
+        .experiment-card {
+            background-color: #1c1c1e;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .experiment-card.active {
+            border: 2px solid #0b84ff;
+        }
+        .safety-warning {
+            background-color: #ef4444;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .breadboard-analysis {
+            background-color: #1c1c1e;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        .analysis-highlight {
+            position: absolute;
+            border: 2px solid #ef4444;
+            border-radius: 4px;
+        }
+        .waveform-analysis {
+            background-color: #1c1c1e;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        .measurement-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+        }
+        .measurement-table th,
+        .measurement-table td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+        }
+        .measurement-table th {
+            background-color: #2c2c2e;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center mb-8">
+            <a href="../index.html" class="text-blue-500 hover:text-blue-400">
+                <i class="fas fa-arrow-left mr-2"></i>返回
+            </a>
+            <h1 class="text-2xl font-bold text-blue-500 ml-4">阶段 1: 多模态问答系统 - 高校实验场景</h1>
+        </div>
+        
+        <div class="text-center mb-8">
+            <p class="text-gray-400 max-w-2xl mx-auto">基于多种输入/输出模态的问答交互系统，支持文字、语音、图片和视频。专为高校模电/数电实验场景优化。</p>
+        </div>
+
+        <!-- iPhone 模拟框 -->
+        <div class="iphone-frame">
+            <!-- 顶部状态栏 -->
+            <div class="notch"></div>
+            <div class="status-bar">
+                <div>9:41</div>
+                <div>
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi ml-1"></i>
+                    <i class="fas fa-battery-full ml-1"></i>
+                </div>
+            </div>
+
+            <!-- 应用头部 -->
+            <div class="app-header">示波器智能问答</div>
+
+            <!-- 实验选择器 -->
+            <div class="experiment-selector">
+                <div class="text-sm text-gray-400 mb-2">当前实验：</div>
+                <div class="experiment-card active">
+                    <div class="font-bold">共射极放大电路测试</div>
+                    <div class="text-sm text-gray-400">模电实验 3.1</div>
+                </div>
+                <div class="experiment-card">
+                    <div class="font-bold">RC 低通滤波器</div>
+                    <div class="text-sm text-gray-400">模电实验 4.2</div>
+                </div>
+            </div>
+
+            <!-- 聊天区域 -->
+            <div class="flex-1 overflow-y-auto p-4" style="height: calc(100% - 395px); overflow-y: auto; padding-bottom: 70px;">
+                <!-- AI 欢迎消息 -->
+                <div class="flex mb-4">
+                    <div class="message-bubble ai-message">
+                        欢迎使用示波器智能问答系统！我是您的实验助手，可以帮您：
+                        <ul class="list-disc pl-4 mt-2">
+                            <li>解答实验原理和操作问题</li>
+                            <li>分析面包板接线和波形</li>
+                            <li>提供仪器操作指导</li>
+                            <li>协助数据记录和分析</li>
+                        </ul>
+                        有什么可以帮您的吗？
+                    </div>
+                </div>
+
+                <!-- 用户问题 - 面包板分析 -->
+                <div class="flex justify-end mb-4">
+                    <div class="message-bubble user-message">
+                        帮我看看这个共射极放大电路的接线对不对？
+                        <img src="https://images.unsplash.com/photo-1584824388099-2795ca239771?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="面包板接线照片" class="message-image">
+                    </div>
+                </div>
+
+                <!-- AI 面包板分析回复 -->
+                <div class="flex mb-4">
+                    <div class="message-bubble ai-message">
+                        <div class="breadboard-analysis">
+                            <div class="font-bold mb-2">面包板分析结果：</div>
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1584824388099-2795ca239771?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="分析后的面包板照片" class="message-image">
+                                <div class="analysis-highlight" style="top: 100px; left: 50px; width: 40px; height: 40px;"></div>
+                                <div class="analysis-highlight" style="top: 150px; left: 120px; width: 60px; height: 30px;"></div>
+                            </div>
+                            <div class="mt-2 text-sm">
+                                <div class="text-red-500">⚠️ 发现以下问题：</div>
+                                <ul class="list-disc pl-4 mt-1">
+                                    <li>R_B 电阻一端未连接到 VCC</li>
+                                    <li>三极管 C、E 极可能接反</li>
+                                    <li>输出耦合电容 C_out 位置不正确</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            建议参考标准接线图：
+                            <img src="https://images.unsplash.com/photo-1621619283482-9eb402639e65?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="标准电路图" class="message-image">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户问题 - 波形分析 -->
+                <div class="flex justify-end mb-4">
+                    <div class="message-bubble user-message">
+                        为什么输出波形下面被削平了？
+                        <img src="https://images.unsplash.com/photo-1589903308904-1010c2294adc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="示波器波形截图" class="message-image">
+                    </div>
+                </div>
+
+                <!-- AI 波形分析回复 -->
+                <div class="flex mb-4">
+                    <div class="message-bubble ai-message">
+                        <div class="waveform-analysis">
+                            <div class="font-bold mb-2">波形分析：</div>
+                            <div>输出波形底部削平是典型的截止失真现象，可能原因：</div>
+                            <ol class="list-decimal pl-4 mt-2">
+                                <li>静态工作点 Q 点过低（靠近截止区）</li>
+                                <li>输入信号幅度过大</li>
+                            </ol>
+                            <div class="safety-warning mt-2">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>注意：请先关闭电源，再调整电路参数</span>
+                            </div>
+                            <div class="mt-2">
+                                建议检查：
+                                <ul class="list-disc pl-4 mt-1">
+                                    <li>基极偏置电阻 R_B 值是否合适</li>
+                                    <li>输入信号 V_in 的幅度是否过大</li>
+                                </ul>
+                            </div>
+                            <div class="mt-2">
+                                根据实验指导，静态集电极电压 V_CEQ 应约为 VCC/2。
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <img src="https://images.unsplash.com/photo-1621619283482-9eb402639e65?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="负载线和Q点示意图" class="message-image">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户问题 - 理论解释 -->
+                <div class="flex justify-end mb-4">
+                    <div class="message-bubble user-message">
+                        为什么会出现截止失真？能解释一下原理吗？
+                    </div>
+                </div>
+
+                <!-- AI 理论解释回复 -->
+                <div class="flex mb-4">
+                    <div class="message-bubble ai-message">
+                        <div>截止失真的原理：</div>
+                        <ol class="list-decimal pl-4 mt-2">
+                            <li>当 Q 点过低时，输入信号的负半周会使基极电压低于发射结导通电压（约 0.7V）</li>
+                            <li>此时三极管进入截止区，集电极电流几乎为零</li>
+                            <li>输出电压被固定在 VCC，形成波形底部的削平</li>
+                        </ol>
+                        <div class="mt-2">
+                            <img src="https://images.unsplash.com/photo-1621619283482-9eb402639e65?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="三极管工作区示意图" class="message-image">
+                        </div>
+                        <div class="mt-2">
+                            要避免截止失真，需要：
+                            <ul class="list-disc pl-4 mt-1">
+                                <li>适当提高 Q 点位置</li>
+                                <li>减小输入信号幅度</li>
+                                <li>确保 V_CEQ ≈ VCC/2</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 输入区域 -->
+            <div class="input-area">
+                <button class="input-button bg-gray-700">
+                    <i class="fas fa-image"></i>
+                </button>
+                <input type="text" class="input-field" placeholder="发送消息...">
+                <button class="input-button bg-blue-500" id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <button class="input-button bg-green-500" id="mic-button">
+                    <i class="fas fa-microphone"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 设计说明 -->
+        <div class="mt-16 max-w-4xl mx-auto">
+            <h2 class="text-xl font-bold text-blue-500 mb-4">设计说明</h2>
+            <div class="bg-gray-800 rounded-xl p-6">
+                <h3 class="font-bold mb-2">高校实验场景优化</h3>
+                <p class="text-gray-400 mb-4">本界面针对高校模电/数电实验场景进行了专门优化，增强了教学辅助功能。</p>
+                
+                <h3 class="font-bold mb-2">核心功能展示</h3>
+                <ul class="list-disc pl-6 text-gray-400 space-y-2">
+                    <li>实验选择器，支持不同实验项目的快速切换</li>
+                    <li>面包板分析功能，可识别接线错误并提供标准参考</li>
+                    <li>波形分析功能，结合理论解释故障原因</li>
+                    <li>安全警告提示，确保实验安全</li>
+                    <li>理论原理解释，帮助理解实验现象</li>
+                </ul>
+                
+                <h3 class="font-bold mt-4 mb-2">设计特点</h3>
+                <ul class="list-disc pl-6 text-gray-400 space-y-2">
+                    <li>高保真 iPhone 设计，包括状态栏和底部指示条</li>
+                    <li>现代化深色 UI，符合专业工具的视觉体验</li>
+                    <li>清晰的信息层级和对话流设计</li>
+                    <li>丰富的可视化元素，包括电路图、波形图等</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 简单交互演示
+        document.addEventListener('DOMContentLoaded', function() {
+            const micButton = document.getElementById('mic-button');
+            const sendButton = document.getElementById('send-button');
+            const inputField = document.querySelector('.input-field');
+            const experimentCards = document.querySelectorAll('.experiment-card');
+            
+            // 实验选择器交互
+            experimentCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    experimentCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // 发送消息交互
+            sendButton.addEventListener('click', function() {
+                if (inputField.value.trim() !== '') {
+                    // 这里可以添加发送消息的逻辑
+                    inputField.value = '';
+                }
+            });
+            
+            inputField.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim() !== '') {
+                    // 这里可以添加发送消息的逻辑
+                    this.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多模态问答系统 - 示波器智能交互系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .iphone-frame {
+            position: relative;
+            margin: 40px auto;
+            width: 375px;
+            height: 812px;
+            background-color: #000;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 0 0 2px #222, 0 0 0 7px #111, 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 20px;
+            height: 44px;
+            background-color: #000;
+            color: white;
+            font-size: 12px;
+            position: relative;
+            z-index: 20;
+        }
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 30px;
+            background-color: #000;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            z-index: 10;
+        }
+        .app-header {
+            background-color: #1c1c1e;
+            border-bottom: 1px solid #333;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 17px;
+        }
+        .message-bubble {
+            max-width: 70%;
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+        .user-message {
+            background-color: #0b84ff;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        .ai-message {
+            background-color: #2c2c2e;
+            color: white;
+            border-bottom-left-radius: 5px;
+        }
+        .message-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+        .message-audio {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 12px;
+        }
+        .message-video {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+            background-color: #000;
+        }
+        .input-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #1c1c1e;
+            padding: 12px;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+        }
+        .input-field {
+            flex: 1;
+            background-color: #2c2c2e;
+            border-radius: 20px;
+            border: none;
+            padding: 10px 15px;
+            color: white;
+            margin-right: 10px;
+        }
+        .input-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0b84ff;
+            color: white;
+            margin-left: 5px;
+        }
+        .typing-indicator {
+            display: flex;
+            padding: 12px 15px;
+            border-radius: 18px;
+            background-color: #2c2c2e;
+            width: fit-content;
+        }
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            margin: 0 2px;
+            background-color: #999;
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.3s linear infinite;
+        }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .voice-recording {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .wave-animation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            margin-top: 10px;
+        }
+        .wave-bar {
+            width: 4px;
+            height: 20px;
+            margin: 0 2px;
+            background-color: #0b84ff;
+            border-radius: 2px;
+            animation: wave 1s infinite ease-in-out;
+        }
+        @keyframes wave {
+            0% { height: 5px; }
+            50% { height: 30px; }
+            100% { height: 5px; }
+        }
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .language-pill {
+            padding: 3px 10px;
+            border-radius: 14px;
+            margin: 0 5px;
+            font-size: 12px;
+            background-color: #333;
+        }
+        .language-pill.active {
+            background-color: #0b84ff;
+        }
+        .tab-bar {
+            display: flex;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(28, 28, 30, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid #333;
+            height: 83px;
+            padding-bottom: 33px; /* For home indicator */
+        }
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #8e8e93;
+            font-size: 10px;
+            padding-top: 8px;
+        }
+        .tab-item.active {
+            color: #0b84ff;
+        }
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal {
+            width: 80%;
+            background-color: #2c2c2e;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .modal-header {
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid #3d3d3d;
+        }
+        .modal-content {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .modal-button {
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #3d3d3d;
+            color: #0b84ff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center mb-8">
+            <a href="../index.html" class="text-blue-500 hover:text-blue-400">
+                <i class="fas fa-arrow-left mr-2"></i>返回
+            </a>
+            <h1 class="text-2xl font-bold text-blue-500 ml-4">阶段 1: 多模态问答系统</h1>
+        </div>
+        
+        <div class="text-center mb-8">
+            <p class="text-gray-400 max-w-2xl mx-auto">基于多种输入/输出模态的问答交互系统，支持文字、语音、图片和视频。能够理解示波器知识，回答专业问题。</p>
+        </div>
+
+        <!-- iPhone 模拟框 -->
+        <div class="iphone-frame">
+            <!-- 顶部状态栏 -->
+            <div class="notch"></div>
+            <div class="status-bar">
+                <div>9:41</div>
+                <div>
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi ml-1"></i>
+                    <i class="fas fa-battery-full ml-1"></i>
+                </div>
+            </div>
+
+            <!-- 应用头部 -->
+            <div class="app-header">示波器智能问答</div>
+
+            <!-- 语言选择器 -->
+            <div class="language-selector pt-2">
+                <div class="language-pill active">中文</div>
+                <div class="language-pill">English</div>
+                <div class="language-pill">日本語</div>
+            </div>
+
+            <!-- 聊天区域 -->
+            <div class="flex-1 overflow-y-auto p-4" style="height: calc(100% - 195px); overflow-y: auto; padding-bottom: 70px;">
+                <!-- AI 欢迎消息 -->
+                <div class="flex mb-4">
+                    <div class="message-bubble ai-message">
+                        欢迎使用示波器智能问答系统！我可以帮您解答关于示波器的各种问题，支持多种交互方式。您可以：
+                        <ul class="list-disc pl-4 mt-2">
+                            <li>输入文字提问</li>
+                            <li>点击麦克风按钮语音提问</li>
+                            <li>上传图片（如示波器截图）提问</li>
+                            <li>上传视频寻求帮助</li>
+                        </ul>
+                        有什么可以帮您的吗？
+                    </div>
+                </div>
+
+                <!-- 用户问题 - 文字 -->
+                <div class="flex justify-end mb-4">
+                    <div class="message-bubble user-message">
+                        触发不稳定怎么办？
+                    </div>
+                </div>
+
+                <!-- AI 回复 - 文字+图片 -->
+                <div class="flex mb-4">
+                    <div class="message-bubble ai-message">
+                        触发不稳定通常有以下几个常见原因：
+                        <ol class="list-decimal pl-4 mt-2">
+                            <li>触发电平设置不合适，可能在噪声区域</li>
+                            <li>触发源选择错误</li>
+                            <li>触发模式不当（如应使用 Normal 而非 Auto）</li>
+                            <li>信号本身不稳定或噪声过大</li>
+                        </ol>
+                        建议检查以下设置：
+                        <img src="https://images.unsplash.com/photo-1621619283482-9eb402639e65?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="触发调整示意图" class="message-image">
+                        <div class="message-audio">
+                            <i class="fas fa-play-circle text-blue-500 text-xl"></i>
+                            <div class="flex-1">
+                                <div class="text-xs text-gray-400">语音回答</div>
+                                <div class="h-1 bg-gray-700 rounded-full mt-1">
+                                    <div class="h-1 bg-blue-500 rounded-full" style="width: 30%"></div>
+                                </div>
+                            </div>
+                            <div class="text-xs">0:45</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户问题 - 图片 -->
+                <div class="flex justify-end mb-4">
+                    <div class="message-bubble user-message">
+                        这个波形看起来正常吗？
+                        <img src="https://images.unsplash.com/photo-1584824388099-2795ca239771?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="用户上传的示波器截图" class="message-image">
+                    </div>
+                </div>
+
+                <!-- AI 回复分析 -->
+                <div class="flex mb-4">
+                    <div class="message-bubble ai-message">
+                        根据您上传的截图，我观察到以下情况：
+                        <ul class="list-disc pl-4 mt-2">
+                            <li>波形显示为正弦波，但顶部有些削平，可能是因为信号幅度超出了垂直范围</li>
+                            <li>触发设置看起来正常，波形稳定</li>
+                            <li>但是垂直刻度可能需要调整，建议增大垂直灵敏度</li>
+                        </ul>
+                        <img src="https://images.unsplash.com/photo-1584824388099-2795ca239771?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="AI分析后的图片" class="message-image">
+                    </div>
+                </div>
+
+                <!-- 用户视频提问 -->
+                <div class="flex justify-end mb-4">
+                    <div class="message-bubble user-message">
+                        我录了一段视频，示波器显示这个奇怪的波形，请问可能是什么问题？
+                        <div class="message-video">
+                            <video poster="https://images.unsplash.com/photo-1589903308904-1010c2294adc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" controls style="width:100%; height:120px; object-fit:cover; border-radius:12px;">
+                                <source src="#" type="video/mp4">
+                                您的浏览器不支持视频播放。
+                            </video>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI 视频分析回复 -->
+                <div class="flex mb-4">
+                    <div class="message-bubble ai-message">
+                        <div>分析您的视频后，我发现这是典型的电源纹波问题。视频中的波形显示高频振荡叠加在直流电平上，这通常表明：</div>
+                        <ul class="list-disc pl-4 mt-2">
+                            <li>电源去耦不足</li>
+                            <li>可能存在开关电源干扰</li>
+                            <li>接地问题导致共模噪声</li>
+                        </ul>
+                        <div>建议检查电源滤波电容，并确保使用正确的探头接地方式。</div>
+                        <div class="message-video mt-2">
+                            <video poster="https://images.unsplash.com/photo-1589903308904-1010c2294adc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" controls style="width:100%; height:120px; object-fit:cover; border-radius:12px;">
+                                <source src="#" type="video/mp4">
+                                您的浏览器不支持视频播放。
+                            </video>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">AI 分析标注视频</div>
+                    </div>
+                </div>
+
+                <!-- 正在输入指示器 -->
+                <div class="flex mb-4">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 录音中提示 -->
+            <div class="voice-recording" style="display: none;">
+                <div>正在录音...</div>
+                <div class="wave-animation">
+                    <div class="wave-bar" style="animation-delay: -0.4s"></div>
+                    <div class="wave-bar" style="animation-delay: -0.3s"></div>
+                    <div class="wave-bar" style="animation-delay: -0.2s"></div>
+                    <div class="wave-bar" style="animation-delay: -0.1s"></div>
+                    <div class="wave-bar" style="animation-delay: 0s"></div>
+                    <div class="wave-bar" style="animation-delay: 0.1s"></div>
+                    <div class="wave-bar" style="animation-delay: 0.2s"></div>
+                </div>
+                <div class="text-sm mt-2">点击停止</div>
+            </div>
+
+            <!-- 输入区域 -->
+            <div class="input-area">
+                <button class="input-button bg-gray-700">
+                    <i class="fas fa-image"></i>
+                </button>
+                <input type="text" class="input-field" placeholder="发送消息...">
+                <button class="input-button bg-blue-500" id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <button class="input-button bg-green-500" id="mic-button">
+                    <i class="fas fa-microphone"></i>
+                </button>
+            </div>
+
+            <!-- 底部标签栏 -->
+            <div class="tab-bar" style="display: none;">
+                <div class="tab-item active">
+                    <i class="fas fa-comments tab-icon"></i>
+                    <span>问答</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-history tab-icon"></i>
+                    <span>历史</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-book tab-icon"></i>
+                    <span>知识库</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-cog tab-icon"></i>
+                    <span>设置</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设计说明 -->
+        <div class="mt-16 max-w-4xl mx-auto">
+            <h2 class="text-xl font-bold text-blue-500 mb-4">设计说明</h2>
+            <div class="bg-gray-800 rounded-xl p-6">
+                <h3 class="font-bold mb-2">多模态交互</h3>
+                <p class="text-gray-400 mb-4">本界面实现了示波器问答系统的多模态交互，包括文字、语音、图片和视频输入输出能力。</p>
+                
+                <h3 class="font-bold mb-2">核心功能展示</h3>
+                <ul class="list-disc pl-6 text-gray-400 space-y-2">
+                    <li>支持文本问答，包括格式化输出（列表、段落）</li>
+                    <li>支持图片分析，能够识别截图上的问题并提供解决方案</li>
+                    <li>支持语音输入和输出，提供语音回放控件</li>
+                    <li>支持视频分析，可以上传操作视频并获得带标注的分析结果</li>
+                    <li>多语言支持，可切换界面和交互语言</li>
+                </ul>
+                
+                <h3 class="font-bold mt-4 mb-2">设计特点</h3>
+                <ul class="list-disc pl-6 text-gray-400 space-y-2">
+                    <li>高保真 iPhone 设计，包括状态栏和底部指示条</li>
+                    <li>现代化深色 UI，符合专业工具的视觉体验</li>
+                    <li>流畅的动画效果，增强交互感</li>
+                    <li>清晰的信息层级和对话流设计</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 简单交互演示
+        document.addEventListener('DOMContentLoaded', function() {
+            const micButton = document.getElementById('mic-button');
+            const voiceRecording = document.querySelector('.voice-recording');
+            
+            micButton.addEventListener('click', function() {
+                voiceRecording.style.display = voiceRecording.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            voiceRecording.addEventListener('click', function() {
+                this.style.display = 'none';
+            });
+
+            const sendButton = document.getElementById('send-button');
+            const inputField = document.querySelector('.input-field');
+            
+            sendButton.addEventListener('click', function() {
+                if (inputField.value.trim() !== '') {
+                    // 这里可以添加发送消息的逻辑
+                    inputField.value = '';
+                }
+            });
+            
+            inputField.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim() !== '') {
+                    // 这里可以添加发送消息的逻辑
+                    this.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
