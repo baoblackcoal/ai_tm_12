@@ -12,6 +12,17 @@
             color: #e0e0e0;
             font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
         }
+        .mechine-div {
+            background-image: url(https://ideacdn.net/idea/ji/61/myassets/products/248/owon-fds1102a-cok-islevli-osiloskop-img-5803_min.JPG?revision=1744016522);
+            background-size: cover;
+            background-position: -200px -450px;
+            background-size: 250%;
+            background-repeat: no-repeat;
+            position: relative;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
         .iphone-frame {
             position: relative;
             margin: 40px auto;
@@ -21,6 +32,7 @@
             border-radius: 40px;
             overflow: hidden;
             box-shadow: 0 0 0 2px #222, 0 0 0 7px #111, 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
         }
         .status-bar {
             display: flex;
@@ -201,167 +213,169 @@
             <p class="text-gray-400 max-w-2xl mx-auto">基于多种输入/输出模态的问答交互系统，支持文字、语音、图片和视频。专为高校模电/数电实验场景优化。</p>
         </div>
 
+        <div class="mechine-div">
         <!-- iPhone 模拟框 -->
-        <div class="iphone-frame">
-            <!-- 顶部状态栏 -->
-            <div class="notch"></div>
-            <div class="status-bar">
-                <div>9:41</div>
-                <div>
-                    <i class="fas fa-signal"></i>
-                    <i class="fas fa-wifi ml-1"></i>
-                    <i class="fas fa-battery-full ml-1"></i>
-                </div>
-            </div>
+            <div class="iphone-frame">
+                <!-- 顶部状态栏 -->
+                <!-- <div class="notch"></div>
+                <div class="status-bar">
+                    <div>9:41</div>
+                    <div>
+                        <i class="fas fa-signal"></i>
+                        <i class="fas fa-wifi ml-1"></i>
+                        <i class="fas fa-battery-full ml-1"></i>
+                    </div>
+                </div> -->
 
-            <!-- 应用头部 -->
-            <div class="app-header">示波器智能问答</div>
+                <!-- 应用头部 -->
+                <div class="app-header">示波器智能问答</div>
 
-            <!-- 实验选择器 -->
-            <div class="experiment-selector">
-                <div class="text-sm text-gray-400 mb-2">当前实验：</div>
-                <div class="experiment-card active">
-                    <div class="font-bold">共射极放大电路测试</div>
-                    <div class="text-sm text-gray-400">模电实验 3.1</div>
-                </div>
-                <div class="experiment-card">
-                    <div class="font-bold">RC 低通滤波器</div>
-                    <div class="text-sm text-gray-400">模电实验 4.2</div>
-                </div>
-            </div>
-
-            <!-- 聊天区域 -->
-            <div class="flex-1 overflow-y-auto p-4" style="height: calc(100% - 395px); overflow-y: auto; padding-bottom: 70px;">
-                <!-- AI 欢迎消息 -->
-                <div class="flex mb-4">
-                    <div class="message-bubble ai-message">
-                        欢迎使用示波器智能问答系统！我是您的实验助手，可以帮您：
-                        <ul class="list-disc pl-4 mt-2">
-                            <li>解答实验原理和操作问题</li>
-                            <li>分析面包板接线和波形</li>
-                            <li>提供仪器操作指导</li>
-                            <li>协助数据记录和分析</li>
-                        </ul>
-                        有什么可以帮您的吗？
+                <!-- 实验选择器 -->
+                <div class="experiment-selector">
+                    <div class="text-sm text-gray-400 mb-2">当前实验：</div>
+                    <div class="experiment-card active">
+                        <div class="font-bold">共射极放大电路测试</div>
+                        <div class="text-sm text-gray-400">模电实验 3.1</div>
+                    </div>
+                    <div class="experiment-card">
+                        <div class="font-bold">RC 低通滤波器</div>
+                        <div class="text-sm text-gray-400">模电实验 4.2</div>
                     </div>
                 </div>
 
-                <!-- 用户问题 - 面包板分析 -->
-                <div class="flex justify-end mb-4">
-                    <div class="message-bubble user-message">
-                        帮我看看这个共射极放大电路的接线对不对？
-                        <img src="https://swf.com.tw/images/hardware/arduino/arduino_breadboard_1.jpg" alt="面包板接线照片" class="message-image">
-                    </div>
-                </div>
-
-                <!-- AI 面包板分析回复 -->
-                <div class="flex mb-4">
-                    <div class="message-bubble ai-message">
-                        <div class="breadboard-analysis">
-                            <div class="font-bold mb-2">面包板分析结果：</div>
-                            <div class="relative">
-                                <img src="https://swf.com.tw/images/hardware/arduino/arduino_breadboard_1.jpg" alt="分析后的面包板照片" class="message-image">
-                                <div class="analysis-highlight" style="top: 100px; left: 50px; width: 40px; height: 40px;"></div>
-                                <div class="analysis-highlight" style="top: 150px; left: 120px; width: 60px; height: 30px;"></div>
-                            </div>
-                            <div class="mt-2 text-sm">
-                                <div class="text-red-500">⚠️ 发现以下问题：</div>
-                                <ul class="list-disc pl-4 mt-1">
-                                    <li>R_B 电阻一端未连接到 VCC</li>
-                                    <li>三极管 C、E 极可能接反</li>
-                                    <li>输出耦合电容 C_out 位置不正确</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            建议参考标准接线图：
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpWRc9bps9Kw9W4UvQyyzw-0zcxMUaKTqiJA&s" alt="标准电路图" class="message-image">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 用户问题 - 波形分析 -->
-                <div class="flex justify-end mb-4">
-                    <div class="message-bubble user-message">
-                        为什么示波器的波形被削平了？
-                        <img src="https://pic1.zhimg.com/v2-0729c52b6c3d01f4c5f0f5f8a3ddf0d4_1440w.jpg" alt="示波器波形截图" class="message-image">
-                    </div>
-                </div>
-
-                <!-- AI 波形分析回复 -->
-                <div class="flex mb-4">
-                    <div class="message-bubble ai-message">
-                        <div class="waveform-analysis">
-                            <div class="font-bold mb-2">波形分析：</div>
-                            <div>输出波形底部削平是典型的截止失真现象，可能原因：</div>
-                            <ol class="list-decimal pl-4 mt-2">
-                                <li>静态工作点 Q 点过低（靠近截止区）</li>
-                                <li>输入信号幅度过大</li>
-                            </ol>
-                            <div class="safety-warning mt-2">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <span>注意：请先关闭电源，再调整电路参数</span>
-                            </div>
-                            <div class="mt-2">
-                                建议检查：
-                                <ul class="list-disc pl-4 mt-1">
-                                    <li>基极偏置电阻 R_B 值是否合适</li>
-                                    <li>输入信号 V_in 的幅度是否过大</li>
-                                </ul>
-                            </div>
-                            <div class="mt-2">
-                                根据实验指导，静态集电极电压 V_CEQ 应约为 VCC/2。请您参考以下视频：
-                            </div>
-                        </div>
-                        <div class="mt-2">
-                            <img src="https://p.sda1.dev/23/aff9ee1b34b454b52e77da42e744ec51/4.png" alt="视频" class="message-image">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 用户问题 - 理论解释 -->
-                <div class="flex justify-end mb-4">
-                    <div class="message-bubble user-message">
-                        为什么会出现截止失真？能解释一下原理吗？
-                    </div>
-                </div>
-
-                <!-- AI 理论解释回复 -->
-                <div class="flex mb-4">
-                    <div class="message-bubble ai-message">
-                        <div>截止失真的原理：</div>
-                        <ol class="list-decimal pl-4 mt-2">
-                            <li>当 Q 点过低时，输入信号的负半周会使基极电压低于发射结导通电压（约 0.7V）</li>
-                            <li>此时三极管进入截止区，集电极电流几乎为零</li>
-                            <li>输出电压被固定在 VCC，形成波形底部的削平</li>
-                        </ol>
-                        <div class="mt-2">
-                            <img src="https://i-blog.csdnimg.cn/blog_migrate/d53ed8331f858cfcbcb81ecc71794aeb.png" alt="三极管工作区示意图" class="message-image">
-                        </div>
-                        <div class="mt-2">
-                            要避免截止失真，需要：
-                            <ul class="list-disc pl-4 mt-1">
-                                <li>适当提高 Q 点位置</li>
-                                <li>减小输入信号幅度</li>
-                                <li>确保 V_CEQ ≈ VCC/2</li>
+                <!-- 聊天区域 -->
+                <div class="flex-1 overflow-y-auto p-4" style="height: calc(100% - 395px); overflow-y: auto; padding-bottom: 70px;">
+                    <!-- AI 欢迎消息 -->
+                    <div class="flex mb-4">
+                        <div class="message-bubble ai-message">
+                            欢迎使用示波器智能问答系统！我是您的实验助手，可以帮您：
+                            <ul class="list-disc pl-4 mt-2">
+                                <li>解答实验原理和操作问题</li>
+                                <li>分析面包板接线和波形</li>
+                                <li>提供仪器操作指导</li>
+                                <li>协助数据记录和分析</li>
                             </ul>
+                            有什么可以帮您的吗？
+                        </div>
+                    </div>
+
+                    <!-- 用户问题 - 面包板分析 -->
+                    <div class="flex justify-end mb-4">
+                        <div class="message-bubble user-message">
+                            帮我看看这个共射极放大电路的接线对不对？
+                            <img src="https://swf.com.tw/images/hardware/arduino/arduino_breadboard_1.jpg" alt="面包板接线照片" class="message-image">
+                        </div>
+                    </div>
+
+                    <!-- AI 面包板分析回复 -->
+                    <div class="flex mb-4">
+                        <div class="message-bubble ai-message">
+                            <div class="breadboard-analysis">
+                                <div class="font-bold mb-2">面包板分析结果：</div>
+                                <div class="relative">
+                                    <img src="https://swf.com.tw/images/hardware/arduino/arduino_breadboard_1.jpg" alt="分析后的面包板照片" class="message-image">
+                                    <div class="analysis-highlight" style="top: 100px; left: 50px; width: 40px; height: 40px;"></div>
+                                    <div class="analysis-highlight" style="top: 150px; left: 120px; width: 60px; height: 30px;"></div>
+                                </div>
+                                <div class="mt-2 text-sm">
+                                    <div class="text-red-500">⚠️ 发现以下问题：</div>
+                                    <ul class="list-disc pl-4 mt-1">
+                                        <li>R_B 电阻一端未连接到 VCC</li>
+                                        <li>三极管 C、E 极可能接反</li>
+                                        <li>输出耦合电容 C_out 位置不正确</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                建议参考标准接线图：
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpWRc9bps9Kw9W4UvQyyzw-0zcxMUaKTqiJA&s" alt="标准电路图" class="message-image">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 用户问题 - 波形分析 -->
+                    <div class="flex justify-end mb-4">
+                        <div class="message-bubble user-message">
+                            为什么示波器的波形被削平了？
+                            <img src="https://pic1.zhimg.com/v2-0729c52b6c3d01f4c5f0f5f8a3ddf0d4_1440w.jpg" alt="示波器波形截图" class="message-image">
+                        </div>
+                    </div>
+
+                    <!-- AI 波形分析回复 -->
+                    <div class="flex mb-4">
+                        <div class="message-bubble ai-message">
+                            <div class="waveform-analysis">
+                                <div class="font-bold mb-2">波形分析：</div>
+                                <div>输出波形底部削平是典型的截止失真现象，可能原因：</div>
+                                <ol class="list-decimal pl-4 mt-2">
+                                    <li>静态工作点 Q 点过低（靠近截止区）</li>
+                                    <li>输入信号幅度过大</li>
+                                </ol>
+                                <div class="safety-warning mt-2">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>注意：请先关闭电源，再调整电路参数</span>
+                                </div>
+                                <div class="mt-2">
+                                    建议检查：
+                                    <ul class="list-disc pl-4 mt-1">
+                                        <li>基极偏置电阻 R_B 值是否合适</li>
+                                        <li>输入信号 V_in 的幅度是否过大</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-2">
+                                    根据实验指导，静态集电极电压 V_CEQ 应约为 VCC/2。请您参考以下视频：
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <img src="https://p.sda1.dev/23/aff9ee1b34b454b52e77da42e744ec51/4.png" alt="视频" class="message-image">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 用户问题 - 理论解释 -->
+                    <div class="flex justify-end mb-4">
+                        <div class="message-bubble user-message">
+                            为什么会出现截止失真？能解释一下原理吗？
+                        </div>
+                    </div>
+
+                    <!-- AI 理论解释回复 -->
+                    <div class="flex mb-4">
+                        <div class="message-bubble ai-message">
+                            <div>截止失真的原理：</div>
+                            <ol class="list-decimal pl-4 mt-2">
+                                <li>当 Q 点过低时，输入信号的负半周会使基极电压低于发射结导通电压（约 0.7V）</li>
+                                <li>此时三极管进入截止区，集电极电流几乎为零</li>
+                                <li>输出电压被固定在 VCC，形成波形底部的削平</li>
+                            </ol>
+                            <div class="mt-2">
+                                <img src="https://i-blog.csdnimg.cn/blog_migrate/d53ed8331f858cfcbcb81ecc71794aeb.png" alt="三极管工作区示意图" class="message-image">
+                            </div>
+                            <div class="mt-2">
+                                要避免截止失真，需要：
+                                <ul class="list-disc pl-4 mt-1">
+                                    <li>适当提高 Q 点位置</li>
+                                    <li>减小输入信号幅度</li>
+                                    <li>确保 V_CEQ ≈ VCC/2</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- 输入区域 -->
-            <div class="input-area">
-                <button class="input-button bg-gray-700">
-                    <i class="fas fa-image"></i>
-                </button>
-                <input type="text" class="input-field" placeholder="发送消息...">
-                <button class="input-button bg-blue-500" id="send-button">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-                <button class="input-button bg-green-500" id="mic-button">
-                    <i class="fas fa-microphone"></i>
-                </button>
+                <!-- 输入区域 -->
+                <div class="input-area">
+                    <button class="input-button bg-gray-700">
+                        <i class="fas fa-image"></i>
+                    </button>
+                    <input type="text" class="input-field" placeholder="发送消息...">
+                    <button class="input-button bg-blue-500" id="send-button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button class="input-button bg-green-500" id="mic-button">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
             </div>
         </div>
 

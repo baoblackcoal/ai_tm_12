@@ -12,6 +12,17 @@
             color: #e0e0e0;
             font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
         }
+        .mechine-div {
+            background-image: url(https://ideacdn.net/idea/ji/61/myassets/products/248/owon-fds1102a-cok-islevli-osiloskop-img-5803_min.JPG?revision=1744016522);
+            background-size: cover;
+            background-position: -200px -450px;
+            background-size: 250%;
+            background-repeat: no-repeat;
+            position: relative;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
         .iphone-frame {
             position: relative;
             margin: 40px auto;
@@ -21,6 +32,7 @@
             border-radius: 40px;
             overflow: hidden;
             box-shadow: 0 0 0 2px #222, 0 0 0 7px #111, 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
         }
         .status-bar {
             display: flex;
@@ -282,18 +294,19 @@
             <p class="text-gray-400 max-w-2xl mx-auto">基于多种输入/输出模态的问答交互系统，支持文字、语音、图片和视频。能够理解示波器知识，回答专业问题。</p>
         </div>
 
+        <div class="mechine-div">
         <!-- iPhone 模拟框 -->
         <div class="iphone-frame">
             <!-- 顶部状态栏 -->
-            <div class="notch"></div>
-            <div class="status-bar">
+            <!-- <div class="notch"></div> -->
+            <!-- <div class="status-bar">
                 <div>9:41</div>
                 <div>
                     <i class="fas fa-signal"></i>
                     <i class="fas fa-wifi ml-1"></i>
                     <i class="fas fa-battery-full ml-1"></i>
                 </div>
-            </div>
+            </div> -->
 
             <!-- 应用头部 -->
             <div class="app-header">示波器智能问答</div>
@@ -491,7 +504,8 @@
                 </ul>
             </div>
         </div>
-    </div>
+        </div>
+    </div>  
 
     <script>
         // 简单交互演示
