@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>示波器智能交互系统 - 工业应用场景</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .mechine-div {
+            background-image: url(https://img.amebaownd.com/content/30059/latest/2e2ee3bc4ff6421690e50abb2e00cfb4.jpg);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        .iphone-frame {
+            position: relative;
+            margin: 40px auto;
+            width: 375px;
+            height: 812px;
+            background-color: #000;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 0 0 2px #222, 0 0 0 7px #111, 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 20px;
+            height: 44px;
+            background-color: #000;
+            color: white;
+            font-size: 12px;
+            position: relative;
+            z-index: 20;
+        }
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 30px;
+            background-color: #000;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            z-index: 10;
+        }
+        .app-header {
+            background-color: #1c1c1e;
+            border-bottom: 1px solid #333;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 17px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .message-bubble {
+            max-width: 70%;
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+        .user-message {
+            background-color: #0b84ff;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        .ai-message {
+            background-color: #2c2c2e;
+            color: white;
+            border-bottom-left-radius: 5px;
+        }
+        .message-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+        .message-audio {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 12px;
+        }
+        .message-video {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+            background-color: #000;
+        }
+        .input-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #1c1c1e;
+            padding: 12px;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+        }
+        .input-field {
+            flex: 1;
+            background-color: #2c2c2e;
+            border-radius: 20px;
+            border: none;
+            padding: 10px 15px;
+            color: white;
+            margin-right: 10px;
+        }
+        .input-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0b84ff;
+            color: white;
+            margin-left: 5px;
+        }
+        .standard-selector {
+            background-color: #2c2c2e;
+            padding: 10px;
+            border-radius: 12px;
+            margin: 10px;
+        }
+        .standard-card {
+            background-color: #1c1c1e;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .standard-card.active {
+            border: 2px solid #0b84ff;
+        }
+        .safety-warning {
+            background-color: #ef4444;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .signal-analysis {
+            background-color: #1c1c1e;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        .analysis-highlight {
+            position: absolute;
+            border: 2px solid #ef4444;
+            border-radius: 4px;
+        }
+        .waveform-analysis {
+            background-color: #1c1c1e;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        .measurement-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+        }
+        .measurement-table th,
+        .measurement-table td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+        }
+        .measurement-table th {
+            background-color: #2c2c2e;
+        }
+        .standard-badge {
+            font-size: 11px;
+            background-color: #2c2c2e;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        .high-contrast-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            background-color: #2c2c2e;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        .e-stop-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .compliance-result {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .pass {
+            background-color: #10b981;
+            color: white;
+        }
+        .fail {
+            background-color: #ef4444;
+            color: white;
+        }
+        .context-panel {
+            background-color: #1c1c1e;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 10px;
+            border-left: 3px solid #0b84ff;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center mb-8">
+            <a href="../index.html" class="text-blue-500 hover:text-blue-400">
+                <i class="fas fa-arrow-left mr-2"></i>返回
+            </a>
+            <h1 class="text-2xl font-bold text-blue-500 ml-4">阶段 1: 多模态问答系统 - 工业应用场景</h1>
+        </div>
+        
+        <div class="text-center mb-8">
+            <p class="text-gray-400 max-w-2xl mx-auto">基于多种输入/输出模态的问答交互系统，专为工业测试和合规性验证场景优化，支持文字、语音、图片、视频和标准文档输入。</p>
+        </div>
+
+        <div class="mechine-div">
+        <!-- iPhone 模拟框 -->
+            <div class="iphone-frame">
+                <!-- 顶部状态栏 -->
+                <div class="notch"></div>
+                <div class="status-bar">
+                    <div>9:41</div>
+                    <div>
+                        <i class="fas fa-signal"></i>
+                        <i class="fas fa-wifi ml-1"></i>
+                        <i class="fas fa-battery-full ml-1"></i>
+                    </div>
+                </div>
+
+                <!-- 应用头部 -->
+                <div class="app-header">
+                    <div class="standard-badge">EN 50160</div>
+                    <div>示波器智能问答</div>
+                    <div class="high-contrast-toggle">
+                        <i class="fas fa-sun"></i>
+                        <div class="text-xs">高对比度</div>
+                    </div>
+                </div>
+
+                <!-- 实验选择器 -->
+                <div class="standard-selector">
+                    <div class="text-sm text-gray-400 mb-2">当前测试标准：</div>
+                    <div class="standard-card active">
+                        <div class="font-bold">EN 50160 电能质量测试</div>
+                        <div class="text-sm text-gray-400">电压特性、谐波、闪变</div>
+                    </div>
+                    <div class="standard-card">
+                        <div class="font-bold">ISO 11898-2 CAN总线测试</div>
+                        <div class="text-sm text-gray-400">物理层电气特性</div>
+                    </div>
+                </div>
+
+                <!-- 上下文面板 -->
+                <div class="context-panel">
+                    <div class="text-xs text-gray-400 mb-1">当前测试对象</div>
+                    <div class="flex justify-between items-center">
+                        <div class="font-semibold">15kW三相变频器 (Model: VFD150-3P)</div>
+                        <i class="fas fa-edit text-blue-400 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- 聊天区域 -->
+                <div class="flex-1 overflow-y-auto p-4" style="height: calc(100% - 360px); overflow-y: auto; padding-bottom: 70px;">
+                    <!-- AI 欢迎消息 -->
+                    <div class="flex mb-4">
+                        <div class="message-bubble ai-message">
+                            欢迎使用工业示波器智能问答系统！我可以帮您进行：
+                            <ul class="list-disc pl-4 mt-2">
+                                <li>电能质量和合规性分析</li>
+                                <li>自动化测试指导和结果解读</li>
+                                <li>工业标准和限值查询</li>
+                                <li>设备故障诊断和波形分析</li>
+                            </ul>
+                            当前已加载 EN 50160 电能质量测试标准。有什么可以帮您的吗？
+                        </div>
+                    </div>
+
+                    <!-- 用户问题 - 标准相关 -->
+                    <div class="flex justify-end mb-4">
+                        <div class="message-bubble user-message">
+                            EN 50160 标准对电压骤降的要求是什么？我们的设备需要通过电能质量认证。
+                        </div>
+                    </div>
+
+                    <!-- AI 标准解释回复 -->
+                    <div class="flex mb-4">
+                        <div class="message-bubble ai-message">
+                            <div>根据 EN 50160 标准，电压骤降 (voltage dips) 定义为电压有效值短时间下降至额定电压的 90% 以下，然后在短时间内恢复的现象。标准对电压骤降的要求如下：</div>
+                            
+                            <div class="measurement-table mt-3">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>参数</th>
+                                            <th>要求</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>短时骤降定义</td>
+                                            <td>电压降至额定值的 90% 以下，持续 10ms 至 1min</td>
+                                        </tr>
+                                        <tr>
+                                            <td>允许次数</td>
+                                            <td>每年 10 至 1000 次 (取决于电网状况)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>严重程度分级</td>
+                                            <td>轻度: 90%-80%，中度: 80%-70%，严重: &lt;70%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <div>对设备认证测试，通常需要验证：</div>
+                                <ol class="list-decimal pl-4 mt-1">
+                                    <li>设备在电压骤降下能否正常运行</li>
+                                    <li>设备是否会引起过多电压骤降</li>
+                                </ol>
+                            </div>
+                            
+                            <div class="mt-2">
+                                <img src="https://www.powerstandards.com/wp-content/uploads/2017/06/voltage-dip-monitoring.jpg" alt="电压骤降示意图" class="message-image">
+                            </div>
+                            
+                            <div class="safety-warning mt-3">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>重要：进行电能质量测试时，需使用符合安全标准的隔离变压器和差分探头，并确保所有设备正确接地。</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 用户问题 - 波形分析 -->
+                    <div class="flex justify-end mb-4">
+                        <div class="message-bubble user-message">
+                            我们的变频器输出波形异常，请帮我分析一下问题可能在哪里？
+                            <img src="https://www.coderanch.com/t/659252/a/20155/PWM-inverter-output-voltage-waveform.png" alt="变频器输出波形" class="message-image">
+                        </div>
+                    </div>
+
+                    <!-- AI 波形分析回复 -->
+                    <div class="flex mb-4">
+                        <div class="message-bubble ai-message">
+                            <div class="waveform-analysis">
+                                <div class="font-bold mb-2">变频器输出波形分析：</div>
+                                <div>这是典型的 PWM 变频器输出波形，但存在以下异常：</div>
+                                <ol class="list-decimal pl-4 mt-2">
+                                    <li>电压尖峰过高 (显示约为 DC 母线电压的 1.5 倍)</li>
+                                    <li>开关波形的振铃严重</li>
+                                    <li>电压上升时间过快</li>
+                                </ol>
+                                
+                                <div class="mt-2">可能的原因：</div>
+                                <ul class="list-disc pl-4 mt-1">
+                                    <li>电机电缆过长 (产生驻波效应)</li>
+                                    <li>电机与变频器阻抗不匹配</li>
+                                    <li>缺少正确的输出滤波器</li>
+                                    <li>接地不良或共模噪声干扰</li>
+                                </ul>
+                                
+                                <div class="safety-warning mt-3">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>警告：这种高尖峰电压可能导致电机绝缘损坏和轴承电流问题！</span>
+                                </div>
+                                
+                                <div class="mt-2">
+                                    <div class="font-bold text-sm">针对 EN 61800-3 标准合规性：</div>
+                                    <div class="mt-1 flex items-center gap-2">
+                                        <div>传导发射：</div>
+                                        <div class="compliance-result fail">不合规</div>
+                                    </div>
+                                    <div class="mt-1 flex items-center gap-2">
+                                        <div>dv/dt 限值：</div>
+                                        <div class="compliance-result fail">不合规</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                建议采取以下措施：
+                                <ol class="list-decimal pl-4 mt-1">
+                                    <li>安装适当规格的 dV/dt 或正弦滤波器</li>
+                                    <li>检查并优化电机电缆长度</li>
+                                    <li>检查接地连接</li>
+                                    <li>考虑使用屏蔽电缆（若未使用）</li>
+                                </ol>
+                            </div>
+                            
+                            <div class="mt-2">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK1y_pP6yC-ncBbR7rlxGJpSHqIFGJSuCbQw&s" alt="正常 PWM 波形对比" class="message-image">
+                                <div class="text-xs text-gray-400 mt-1">↑ 安装滤波器后的预期波形</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 文件上传请求 -->
+                    <div class="flex mb-4">
+                        <div class="message-bubble ai-message">
+                            要进行更详细的分析，我建议上传以下文件：
+                            <ul class="list-disc pl-4 mt-2">
+                                <li>变频器设置参数表</li>
+                                <li>完整的电机数据表</li>
+                                <li>电气连接图</li>
+                            </ul>
+                            这样我可以提供更精确的诊断和解决方案。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输入区域 -->
+                <div class="input-area">
+                    <button class="input-button bg-gray-700">
+                        <i class="fas fa-image"></i>
+                    </button>
+                    <button class="input-button bg-gray-700">
+                        <i class="fas fa-file-pdf"></i>
+                    </button>
+                    <input type="text" class="input-field" placeholder="发送消息...">
+                    <button class="input-button bg-blue-500" id="send-button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button class="input-button bg-green-500" id="mic-button">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设计说明 -->
+        <div class="mt-16 max-w-4xl mx-auto">
+            <h2 class="text-xl font-bold text-blue-500 mb-4">设计说明</h2>
+            <div class="bg-gray-800 rounded-xl p-6">
+                <h3 class="font-bold mb-2">工业应用场景优化</h3>
+                <p class="text-gray-400 mb-4">本界面针对工业测试和合规性验证场景进行了专门优化，强调安全性、标准合规性和专业数据分析。</p>
+                
+                <h3 class="font-bold mb-2">核心功能展示</h3>
+                <ul class="list-disc pl-6 text-gray-400 space-y-2">
+                    <li>工业标准选择器，支持不同测试标准的快速切换</li>
+                    <li>标准解释和合规性分析功能，提供规范要求和限值参考</li>
+                    <li>波形异常分析，结合工业标准判断合规性</li>
+                    <li>突出显示的安全警告提示，确保操作安全</li>
+                    <li>文件上传功能，支持标准文档、设备手册和测试规程</li>
+                    <li>测试对象上下文面板，确保AI理解当前工作环境</li>
+                </ul>
+                
+                <h3 class="font-bold mt-4 mb-2">设计特点</h3>
+                <ul class="list-disc pl-6 text-gray-400 space-y-2">
+                    <li>高保真 iPhone 设计，包括状态栏和现代UI元素</li>
+                    <li>高对比度模式切换，适应各种工业环境光线条件</li>
+                    <li>专业的数据表格展示，清晰呈现测量结果和标准限值</li>
+                    <li>合规性结果醒目标示，Pass/Fail状态一目了然</li>
+                    <li>工业安全警告突出显示，确保用户关注关键安全信息</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 紧急停止按钮 -->
+    <div class="e-stop-button">
+        <i class="fas fa-hand-paper fa-2x"></i>
+    </div>
+
+    <script>
+        // 简单交互演示
+        document.addEventListener('DOMContentLoaded', function() {
+            const micButton = document.getElementById('mic-button');
+            const sendButton = document.getElementById('send-button');
+            const inputField = document.querySelector('.input-field');
+            const standardCards = document.querySelectorAll('.standard-card');
+            const highContrastToggle = document.querySelector('.high-contrast-toggle');
+            const eStopButton = document.querySelector('.e-stop-button');
+            
+            // 标准选择器交互
+            standardCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    standardCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // 高对比度模式切换
+            highContrastToggle.addEventListener('click', function() {
+                document.body.classList.toggle('high-contrast-mode');
+            });
+            
+            // 紧急停止按钮交互
+            eStopButton.addEventListener('click', function() {
+                alert('紧急停止已激活！所有测试和自动化操作已中断。');
+            });
+            
+            // 发送消息交互
+            sendButton.addEventListener('click', function() {
+                if (inputField.value.trim() !== '') {
+                    // 这里可以添加发送消息的逻辑
+                    inputField.value = '';
+                }
+            });
+            
+            inputField.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim() !== '') {
+                    // 这里可以添加发送消息的逻辑
+                    this.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

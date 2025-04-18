@@ -1,15 +1,74 @@
-
-**核心设计原则 (贯穿所有阶段):**
-
-*   **统一性 (Unity):** 跨平台（示波器嵌入式网页、PC Web、移动端/小程序、AR）提供一致的核心体验和视觉语言，但根据平台特性优化交互。
-*   **情境感知 (Context-Aware):** AI 必须理解当前任务、示波器状态、历史交互，提供相关性强的辅助。
-*   **用户控制与信任 (Control & Trust):** 特别是在控制示波器或硬件时，用户需要清晰了解 AI 的意图，有明确的确认/取消机制，并能随时接管。
-*   **反馈清晰 (Clear Feedback):** AI 的状态、操作过程、结果都需要实时、明确地反馈给用户。
-*   **效率优先 (Efficiency):** 简化操作流程，减少用户认知负荷，尤其是在专业测试场景下。
-*   **高设计感 (Aesthetics):** 现代、简洁、专业、科技感。
+Okay, let's integrate industrial market application scenarios and refine the UX design for Phases 1 and 2, keeping the core principles in mind. Industrial applications often prioritize **reliability, repeatability, safety, compliance, and efficiency in potentially harsh environments or under specific regulatory constraints.**
 
 ---
 
+**Core Design Principles (Reiterated for Industrial Context):**
+
+*   **统一性 (Unity):** Consistent core AI interaction across platforms, but *specialized views/modes* for specific industrial tasks (e.g., Compliance Testing, QC, Field Service).
+*   **情境感知 (Context-Aware):** AI understands the *industrial standard* being tested (e.g., IEC 61000, ISO 16750), the *type of equipment* under test (motor drive, power supply, CAN bus), and potentially the *operating environment*.
+*   **用户控制与信任 (Control & Trust):** **Crucial.** Actions affecting industrial equipment require clear, unambiguous confirmation. Audit trails for commands and results may be needed for compliance. Safety warnings are paramount.
+*   **反馈清晰 (Clear Feedback):** Immediate and obvious Pass/Fail indicators, out-of-limit warnings, status of long test sequences.
+*   **效率优先 (Efficiency):** Streamlined workflows for repetitive tests (QC), automated report generation, quick access to standard-specific setups.
+*   **高设计感 (Aesthetics):** Professional, clear, and *robust* interface. Legibility in various lighting conditions (factory floor, field) is important. Data density might need to be adjustable.
+
+---
+
+## 阶段 1: 多模态问答系统 (Foundation) - 工业应用增强
+
+**完善需求 (工业增强):**
+
+*   **核心功能:** 提供基于示波器知识 **以及特定工业应用和标准** 的问答服务。
+*   **输入模态:**
+    *   文字/语音: "EN 50160 标准对电压骤降的要求是什么？", "如何测试三相电机启动电流？"
+    *   图片: 上传设备铭牌照片 ("这个型号的电机驱动应该用什么探头？"), 控制柜接线图 ("帮我识别 CAN 总线接口"), 合规测试失败截图 ("为什么这个谐波测试失败了？")
+    *   视频: 演示连接探头的过程 ("这样接对吗？"), 记录设备异常噪音并附带波形 ("噪音出现时信号有什么特征？")
+    *   **(新增) 文件上传:** 上传 PDF 格式的工业标准、设备手册、测试规程。AI 可尝试解析并回答基于文档的问题 (e.g., "根据上传的 XXX 标准，第 5.2 节的测试限值是多少？")。
+*   **输出模态:**
+    *   文字: 解释标准条款、推荐测试配置、分析潜在故障原因、提供安全注意事项。
+    *   图片: 返回标准限值图、推荐的探头连接示意图、标记用户图片中的关键点（如：指出截图中的超标谐波）。
+    *   视频: 相关安全操作演示、特定工业测试的设置教程。
+    *   **(新增) 结构化数据/片段:** 直接提供标准限值表格、推荐的仪器设置参数列表。
+*   **知识库 (工业增强):**
+    *   **必须包含:** 关键工业标准 (电力质量、汽车电子、通信总线如 CAN/LIN/FlexRay/Ethernet, 工业以太网等)、常见工业设备（电机、变频器、PLC、传感器、电源）的测试方法和典型信号、安全规范、探头选择和使用（高压差分、电流探头等）。
+    *   能理解特定行业的术语（如浪涌、谐波、抖动、眼图、传导发射）。
+*   **个性化:** 记录用户常用的行业、标准、设备类型。
+
+**UX 设计 (阶段 1 - 工业增强):**
+
+*   **核心用户流程:** (类似) 打开界面 -> **(可选) 选择应用领域/标准** -> 输入问题 (多模态) -> AI 处理 (结合通用知识和行业知识) -> AI 输出答案 (多模态，强调合规性/安全性) -> 进一步交互。
+*   **UI 界面设计:**
+    *   **整体风格:** 保持简洁专业，但可能提供 **高对比度模式** 或 **简化模式** (适合嘈杂/恶劣环境或 QC 操作员)。
+    *   **布局 (工业场景调整):**
+        *   **PC/Scope:** 在双栏布局的右侧，除了显示辅助信息，可以 **固定显示当前关联的标准/设备上下文** 或 **安全提示**。
+        *   **移动端 (现场服务):** 优化单手操作，按钮更大。考虑 **离线知识库** 的访问（部分功能）。
+    *   **输入增强:**
+        *   **文件上传:** 清晰的文件上传入口，显示上传进度和已上传文档列表。AI 回答时能引用特定文档来源。
+        *   **领域/标准选择:** 在输入区域附近或设置中，允许用户指定当前工作的领域 (如 "汽车电子", "电力分析") 或具体标准，帮助 AI 聚焦知识范围。
+    *   **输出增强:**
+        *   **合规性高亮:** 当回答涉及标准限值时，清晰标示 Pass/Fail 相关信息或裕量。
+        *   **安全警告:** 使用醒目的图标和颜色（如黄色警告/红色危险）突出显示安全相关的建议或注意事项。
+        *   **参数列表:** 以表格或易于复制的格式提供推荐的示波器设置参数。
+    *   **高设计感 (工业适应):** 字体选择兼顾清晰度和信息密度。图标设计直观，减少歧义。避免过多不必要的动画，特别是在嵌入式或资源受限的平台上。
+
+*   **实例 (工业场景):**
+    *   **场景:** 技术员在 **工厂车间** 使用 **示波器嵌入式网页**，排查一台变频器 (VFD) 的输出问题。
+    *   **交互:** 技术员拍下 VFD 输出波形照片上传，并用语音询问："这个 PWM 信号正常吗？好像有尖峰。"
+    *   **AI 回答 (示波器界面):**
+        *   文字气泡: "分析了您上传的波形，观察到明显的电压尖峰。这可能由以下原因引起：1. IGBT 开关特性问题。2. 电缆过长或阻抗不匹配导致反射。3. 缺少或损坏的输出滤波器。 **注意：测量 VFD 输出时请务必使用正确额定值的高压差分探头，并遵守安全操作规程。**"
+        *   图片气泡: 返回用户图片，用圆圈标记出尖峰位置，并可能叠加上一个理想 PWM 波形作为对比。
+        *   文字气泡 (可选): "建议检查 VFD 参数设置中的开关频率，并检查输出电缆连接。"
+    *   **场景:** 工程师在 **PC 网页** 上准备进行汽车 CAN 总线物理层一致性测试。
+    *   **交互:** 工程师输入文字："帮我找一下 ISO 11898-2 标准里关于 CAN 总线差分电压的限值是多少？"
+    *   **AI 回答 (PC 网页界面 - 双栏):**
+        *   左侧对话流 (文本气泡): "根据 ISO 11898-2 标准，CAN 总线（高速）在显性状态下的典型差分电压为 2V，标准规定范围通常在 1.5V 到 3.0V 之间。在隐性状态下，典型差分电压为 0V，范围通常在 -0.5V 到 0.5V 之间。具体限值请参考您正在使用的标准的具体版本。"
+        *   左侧对话流 (结构化数据):
+            | 状态   | 典型 Vdiff | 范围 (参考) |
+            | :----- | :--------- | :---------- |
+            | 显性   | 2.0 V      | 1.5V - 3.0V |
+            | 隐性   | 0 V        | -0.5V - 0.5V|
+        *   右侧辅助栏: 显示 ISO 11898-2 相关章节的链接或截图，可能还有推荐的测试设置摘要。
+
+---
 ## 阶段 2：AI Agent 控制系统 (增强版工业应用)
 
 此阶段显著增强了 AI Agent 的能力，专注于满足工业测试环境的需求，包括自动化序列、合规性、安全性、报告生成以及 SCPI 脚本生成辅助。
@@ -138,3 +197,6 @@
     *   *工程师:* 审查代码，可能在编辑器中修改或复制它。点击 **[另存为...]** 或 **[复制到剪贴板]**。
 
 ---
+
+
+通过这些针对工业应用的增强，AI 示波器助手能更好地融入工业环境的工作流程，提高测试效率、确保合规性，并时刻强调操作安全。
