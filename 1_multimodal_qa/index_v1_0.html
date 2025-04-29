@@ -13,6 +13,7 @@
             font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
         }
         .mechine-div {
+            background-image: url(https://ideacdn.net/idea/ji/61/myassets/products/248/owon-fds1102a-cok-islevli-osiloskop-img-5803_min.JPG?revision=1744016522);
             background-size: cover;
             background-position: -200px -450px;
             background-size: 250%;
@@ -61,21 +62,9 @@
             background-color: #1c1c1e;
             border-bottom: 1px solid #333;
             padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #header-more {
-            width: 24px;
-            color: #e0e0e0;
-            cursor: pointer;
-        }
-        #header-title {
+            text-align: center;
             font-weight: bold;
             font-size: 17px;
-            color: #e0e0e0;
-            flex: 1;
-            text-align: center;
         }
         .message-bubble {
             max-width: 70%;
@@ -126,30 +115,17 @@
             padding: 12px;
             border-top: 1px solid #333;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            border-radius: 20px; 
-
-        }
-        .input-area-header {
-            width: 100%;
+            align-items: center;
         }
         .input-field {
-            /* /* flex: 1; */
-            background-color: #1c1c1e;
+            flex: 1;
+            background-color: #2c2c2e;
+            border-radius: 20px;
             border: none;
             padding: 10px 15px;
             color: white;
-            width: 100%;
-        }
-        #input-buttons {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-        }
-        #left-buttons, #right-buttons {
-            display: flex;
-            gap: 8px;
+            margin-right: 10px;
+            width: 100px;
         }
         .input-button {
             width: 36px;
@@ -160,6 +136,7 @@
             justify-content: center;
             background-color: #0b84ff;
             color: white;
+            margin-left: 5px;
         }
         .typing-indicator {
             display: flex;
@@ -448,25 +425,33 @@
 </head>
 <body class="min-h-screen">
     <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center mb-8">
+            <a href="../index.html" class="text-blue-500 hover:text-blue-400">
+                <i class="fas fa-arrow-left mr-2"></i>返回
+            </a>
+            <h1 class="text-2xl font-bold text-blue-500 ml-4">小欧AI助手</h1>
+        </div>
         
-
+        <!-- <div class="text-center mb-8">
+            <p class="text-gray-400 max-w-2xl mx-auto">基于多种输入/输出模态的问答交互系统，支持文字、语音、图片和视频。能够理解示波器知识，回答专业问题。</p>
+        </div> -->
 
         <div class="mechine-div">
         <!-- iPhone 模拟框 -->
         <div class="iphone-frame">
+            <!-- 顶部状态栏 -->
+            <!-- <div class="notch"></div> -->
+            <!-- <div class="status-bar">
+                <div>9:41</div>
+                <div>
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi ml-1"></i>
+                    <i class="fas fa-battery-full ml-1"></i>
+                </div>
+            </div> -->
 
             <!-- 应用头部 -->
-            
-            <div class="app-header">
-                <div id="header-more" title="更多">
-                    <i class="fas fa-ellipsis-h"></i>
-                </div>
-                <div id="header-title">小欧AI助手</div>
-                <div id="header-more" title="新聊天">
-                    <i class="fas fa-pen-to-square"></i>
-                </div>               
-            </div>
-            
+            <div class="app-header">小欧AI助手</div>
 
             <!-- 模式选择区 -->
             <div class="mode-selector">
@@ -767,33 +752,26 @@ print("测量完成")</div>
 
             <!-- 输入区域 -->
             <div class="input-area">
-                <div class="input-area-header">
-                    <input type="text" class="input-field" placeholder="发送消息...">
-                </div>
-                
-                <div id="input-buttons">
-                    <div id="left-buttons">
-                        <button class="input-button bg-gray-700" title="图片">
-                            <i class="fas fa-image"></i>
-                        </button>
-                        <button class="input-button bg-gray-700" title="相机">
-                            <i class="fas fa-camera"></i>
-                        </button>
-                        <button class="input-button bg-gray-700" title="文件">
-                            <i class="fas fa-file"></i>
-                        </button>
-                    </div>
-                    <div id="right-buttons">
-                        <button class="input-button bg-purple-500" id="video-call-button" title="实时视频和语音">
-                            <i class="fas fa-video"></i>
-                        </button>
-                        <button class="input-button bg-green-500" id="mic-button" title="麦克风">
-                            <i class="fas fa-microphone"></i>
-                        </button>                       
-                        <button class="input-button bg-blue-500" id="send-button" title="发送">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
+                <input type="text" class="input-field" placeholder="发送消息...">
+                <div class="flex">
+                    <button class="input-button bg-gray-700 ml-2" title="图片">
+                        <i class="fas fa-image"></i>
+                    </button>
+                    <button class="input-button bg-gray-700 ml-2" title="相机">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button class="input-button bg-gray-700 ml-2" title="文件">
+                        <i class="fas fa-file"></i>
+                    </button>
+                    <button class="input-button bg-green-500 ml-2" id="mic-button" title="麦克风">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="input-button bg-purple-500 ml-2" id="video-call-button" title="实时视频和语音">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="input-button bg-blue-500 ml-2" id="send-button" title="发送">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
 
@@ -861,7 +839,31 @@ print("测量完成")</div>
             </div>
         </div>
 
-        
+        <!-- 设计说明 -->
+        <div class="mt-16 max-w-4xl mx-auto">
+            <h2 class="text-xl font-bold text-blue-500 mb-4">设计说明</h2>
+            <div class="bg-gray-800 rounded-xl p-6">
+                <h3 class="font-bold mb-2">多模态交互</h3>
+                <p class="text-gray-400 mb-4">本界面实现了示波器问答系统的多模态交互，包括文字、语音、图片和视频输入输出能力。</p>
+                
+                <h3 class="font-bold mb-2">核心功能展示</h3>
+                <ul class="list-disc pl-6 text-gray-400 space-y-2">
+                    <li>支持文本问答，包括格式化输出（列表、段落）</li>
+                    <li>支持图片分析，能够识别截图上的问题并提供解决方案</li>
+                    <li>支持语音输入和输出，提供语音回放控件</li>
+                    <li>支持视频分析，可以上传操作视频并获得带标注的分析结果</li>
+                    <li>多语言支持，可切换界面和交互语言</li>
+                </ul>
+                
+                <h3 class="font-bold mt-4 mb-2">设计特点</h3>
+                <ul class="list-disc pl-6 text-gray-400 space-y-2">
+                    <li>高保真 iPhone 设计，包括状态栏和底部指示条</li>
+                    <li>现代化深色 UI，符合专业工具的视觉体验</li>
+                    <li>流畅的动画效果，增强交互感</li>
+                    <li>清晰的信息层级和对话流设计</li>
+                </ul>
+            </div>
+        </div>
         </div>
     </div>  
 
